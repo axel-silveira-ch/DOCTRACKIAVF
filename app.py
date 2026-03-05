@@ -28,7 +28,7 @@ SERVICE_ACCOUNT_FILE = 'credentials.json'
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
 # Configuración de Google AI
-GOOGLE_AI_API_KEY = os.getenv('GOOGLE_AI_API_KEY', 'AIzaSyC_s5wpW0gn66DepBOOpdeHiMQtAeg_buE')
+GOOGLE_AI_API_KEY = os.getenv('GOOGLE_AI_API_KEY')
 GOOGLE_AI_URL = os.getenv('GOOGLE_AI_URL', 'https://generativelanguage.googleapis.com/v1beta/models/')
 MODEL_NAME = os.getenv('MODEL_NAME', 'gemini-2.5-flash')
 
@@ -5825,4 +5825,5 @@ if __name__ == '__main__':
     print("\n🌐 Iniciando servidor web...")
     print("=" * 70)
     
+
     app.run(debug=True, port=5000, host='0.0.0.0')
