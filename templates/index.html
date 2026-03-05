@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoctrackIA - Sistema de Gestión Medico</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="text-white">
+    <!-- Header Principal -->
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <i class="fas fa-file-contract logo-icon"></i>
+                <div>
+                    <h1 class="logo-text">DOCTRACKIA</h1>
+                    <p class="text-sm text-gray-400">Sistema Integral de Gestión Medica</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <div class="user-menu">
+                    <div class="user-avatar">{{ user.name[:2] | upper if user.name else 'AD' }}</div>
+                    <div>
+                        <div class="text-sm font-medium">{{ user.name }}</div>
+                    </div>
+                </div>
+                <a href="/logout" class="ml-4 text-gray-400 hover:text-white">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sistema de Pestañas -->
+    <div class="tabs-container">
+        <!-- Navegación de Pestañas -->
+        <div class="tabs-header">
+            <div class="tabs-navigation">
+                <!-- Pestañas siempre visibles para todos -->
+                <div class="tab-item tab-contracts active" data-tab="contracts">
+                    <div class="tab-icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <span>Documentos</span>
+                    <span class="tab-badge">0</span>
+                </div>
+                
+                <!-- Pestañas solo para usuarios con rol 'full' -->
+                {% if user.role == 'full' %}
+                <div class="tab-item tab-payments" data-tab="payments">
+                    <div class="tab-icon">
+                        <i class="fas fa-users text-green-500"></i>
+                    </div>
+                    <span>Pacientes y Recetas</span>
+                    <span class="tab-badge" id="patients-tab-badge">0</span>
+                </div>
+                
+                <div class="tab-item tab-monitoring" data-tab="monitoring">
+                    <div class="tab-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <span>Gestión de Citas</span>
+                    <span class="tab-badge">3</span>
+                </div>
+                
+                <div class="tab-item tab-diag" data-tab="diag">
+                    <div class="tab-icon">
+                        <i class="fas fa-brain text-purple-500"></i>  <!-- Icono diferente -->
+                    </div>
+                    <span>Predecir Diagnóstico</span>
+                </div>
+                {% endif %}
+            </div>
+            
+        </div>
+
+        <!-- Contenido de Pestañas -->
+        <div class="tab-content">
+            <!-- Las pestañas se cargarán dinámicamente -->
+            {% include 'components/contracts.html' %}
+            
+            <!-- Solo cargar si tiene acceso completo -->
+            {% if user.role == 'full' %}
+                {% include 'components/patients.html' %}
+                {% include 'components/dates.html' %}
+                {% include 'components/diag.html' %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Pasar información del usuario al JavaScript -->
+    <script>
+        window.currentUser = {
+            name: "{{ user.name }}",
+            email: "{{ user.email }}",
+            role: "{{ user.role }}"
+        };
+    </script>
+
+    <!-- Incluir JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/contracts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/invoices.js') }}"></script>
+    
+    <!-- Scripts adicionales solo para usuarios con acceso completo -->
+    {% if user.role == 'full' %}
+    <script src="{{ url_for('static', filename='js/patients.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dates.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/diag.js') }}"></script>
+    {% endif %}
+    
+    <!-- Script de inicialización -->
+    <script>
+        console.log('📦 Usuario:', window.currentUser);
+        
+        // Ocultar pestañas no disponibles en el frontend
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.currentUser.role !== 'full') {
+                // Asegurar que solo se muestre Contracts e Invoices
+                const tabItems = document.querySelectorAll('.tab-item');
+                tabItems.forEach(tab => {
+                    const tabName = tab.getAttribute('data-tab');
+                    if (tabName !== 'contracts' && tabName !== 'invoices') {
+                        tab.style.display = 'none';
+                    }
+                });
+                
+                // Si intentan acceder a otra pestaña por URL, redirigir a contracts
+                const hash = window.location.hash;
+                if (hash && !hash.includes('contracts') && !hash.includes('invoices')) {
+                    window.location.hash = '#contracts';
+                }
+            }
+        });
+
+        setTimeout(() => {
+            console.log('🔍 Verificando funciones disponibles:');
+            console.log('- activateTab:', typeof activateTab !== 'undefined' ? '✅' : '❌');
+            console.log('- loadContracts:', typeof loadContracts !== 'undefined' ? '✅' : '❌');
+            
+            if (window.currentUser.role === 'full') {
+                console.log('- loadMonitoringDashboard:', typeof loadMonitoringDashboard !== 'undefined' ? '✅' : '❌');
+                console.log('- loadReportsDashboard:', typeof loadReportsDashboard !== 'undefined' ? '✅' : '❌');
+            }
+            
+            console.log('- Chart.js:', typeof Chart !== 'undefined' ? '✅' : '❌');
+        }, 500);
+    </script>
+</body>
+</html>

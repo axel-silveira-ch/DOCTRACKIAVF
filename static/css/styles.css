@@ -1,0 +1,2439 @@
+        :root {
+            --bg-primary: #111827;
+            --bg-secondary: #1f2937;
+            --bg-sidebar: #1f2937;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --border-color: #60a5fa;
+            --border-light: #374151;
+            --header-bg: #1f2937;
+            --card-bg: #1f2937;
+            --hover-bg: #374151;
+            --selected-bg: #1e3a8a;
+            --modal-bg: #1f2937;
+            
+            /* Colores específicos para pestañas */
+            --tab-contracts: #3b82f6;
+            --tab-payments: #f59e0b;
+            --tab-monitoring: #8b5cf6;
+            --tab-documents: #ec4899;
+            --tab-reports: #6366f1;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ===== SISTEMA DE PESTAÑAS ===== */
+        .tabs-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 80px);
+            background: var(--bg-primary);
+        }
+
+        .tabs-header {
+            background: var(--header-bg);
+            border-bottom: 2px solid var(--border-light);
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .tabs-navigation {
+            display: flex;
+            gap: 0.25rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding: 0.5rem 0;
+        }
+
+        .tabs-navigation::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            white-space: nowrap;
+            font-weight: 500;
+            color: var(--text-secondary);
+            min-width: fit-content;
+        }
+
+        .tab-item:hover {
+            background: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
+        .tab-item.active {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+            border-bottom-color: var(--bg-primary);
+            margin-bottom: -2px;
+            z-index: 10;
+        }
+
+        .tab-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -1px;
+            right: -1px;
+            height: 3px;
+            background: var(--border-color);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .tab-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            border-radius: 6px;
+        }
+
+        .tab-badge {
+            background: var(--border-light);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 10px;
+            margin-left: 0.5rem;
+        }
+
+        .tab-item.active .tab-badge {
+            background: var(--border-color);
+            color: white;
+        }
+
+        /* Colores específicos para cada pestaña */
+        .tab-contracts.active::before { background: var(--tab-contracts); }
+        .tab-payments.active::before { background: var(--tab-payments); }
+        .tab-monitoring.active::before { background: var(--tab-monitoring); }
+        .tab-documents.active::before { background: var(--tab-documents); }
+        .tab-reports.active::before { background: var(--tab-reports); }
+
+        .tab-contracts .tab-icon { background: rgba(59, 130, 246, 0.2); color: var(--tab-contracts); }
+        .tab-payments .tab-icon { background: rgba(245, 158, 11, 0.2); color: var(--tab-payments); }
+        .tab-monitoring .tab-icon { background: rgba(139, 92, 246, 0.2); color: var(--tab-monitoring); }
+        .tab-documents .tab-icon { background: rgba(236, 72, 153, 0.2); color: var(--tab-documents); }
+        .tab-reports .tab-icon { background: rgba(99, 102, 241, 0.2); color: var(--tab-reports); }
+
+        .tab-contracts.active { border-color: var(--tab-contracts); }
+        .tab-payments.active { border-color: var(--tab-payments); }
+        .tab-monitoring.active { border-color: var(--tab-monitoring); }
+        .tab-documents.active { border-color: var(--tab-documents); }
+        .tab-reports.active { border-color: var(--tab-reports); }
+
+        /* Contenido de pestañas */
+        .tab-content {
+            flex: 1;
+            overflow: hidden;
+            background: var(--bg-primary);
+            position: relative;
+        }
+
+        .tab-pane {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 1.5rem;
+            overflow-y: auto;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            display: none;
+        }
+
+        .tab-pane.active {
+            opacity: 1;
+            visibility: visible;
+            display: block;
+        }
+
+        /* Header de cada pestaña */
+        .tab-pane-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .tab-pane-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .tab-pane-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 800px;
+        }
+
+        /* ===== DISEÑO DE CONTENIDO POR PESTAÑA ===== */
+        
+        /* Pestaña CONTRATOS */
+        .contracts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Cada uno ocupa la mitad */
+            gap: 1.5rem;
+            height: calc(100vh - 200px);
+        }
+
+        .contracts-list {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .contract-detail {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .contract-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .contract-card:hover {
+            border-color: var(--border-color);
+            transform: translateX(5px);
+        }
+
+        .contract-card.active {
+            border-color: var(--tab-contracts);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .contract-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .contract-id {
+            font-weight: 600;
+            color: var(--tab-contracts);
+            font-size: 0.95rem;
+        }
+
+        .contract-client {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .contract-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .contract-timeline {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .timeline-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            position: relative;
+        }
+
+        .step-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--border-light);
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .step-icon.completed {
+            background: var(--tab-contracts);
+            color: white;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        /* ===== UTILIDADES ===== */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .badge-info {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--border-light);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-fill.contracts { background: var(--tab-contracts); }
+        .progress-fill.monitoring { background: var(--tab-monitoring); }
+
+        /* ===== BOTONES DE ACCIÓN PARA ARCHIVOS ===== */
+        .file-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 10;
+        }
+
+        .timeline-step:hover .file-actions,
+        .contract-card:hover .file-actions {
+            opacity: 1;
+        }
+
+        .file-action-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            white-space: nowrap;
+        }
+
+        .file-action-btn:hover {
+            background: var(--hover-bg);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .file-action-btn.primary {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
+        }
+
+        .file-action-btn.success {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: #10b981;
+        }
+
+        .file-action-btn.purple {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: rgba(168, 85, 247, 0.3);
+            color: #a855f7;
+        }
+
+        /* ===== MODALES ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .modal-content {
+            background: var(--modal-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-light);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        /* ===== TABLAS DE DATOS IA ===== */
+        .ai-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .ai-data-table th {
+            background: var(--bg-secondary);
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid var(--border-light);
+        }
+
+        .ai-data-table td {
+            padding: 0.75rem;
+            border: 1px solid var(--border-light);
+            vertical-align: top;
+        }
+
+        .ai-data-table tr:hover {
+            background: var(--hover-bg);
+        }
+
+        .field-label {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .field-value {
+            color: var(--text-secondary);
+        }
+
+        .field-empty {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        /* ===== BOTONES ===== */
+        .btn-primary {
+            background: var(--border-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--hover-bg);
+            border-color: var(--border-color);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: #ef4444;
+        }
+
+        /* ===== FORMULARIOS ===== */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--border-color);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+        }
+
+        /* ===== BADGES PARA ARCHIVOS CON DATOS ===== */
+        .contract-data-badge {
+            background: rgba(34, 197, 94, 0.2);
+            color: #10b981;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .file-with-data {
+            position: relative;
+        }
+
+        .file-with-data::after {
+            content: '📄';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.8rem;
+            background: rgba(34, 197, 94, 0.2);
+            color: #10b981;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tab-pane.active {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* ===== SCROLL PERSONALIZADO ===== */
+        .scrollable {
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-light) var(--bg-primary);
+        }
+
+        .scrollable::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollable::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+            border-radius: 3px;
+        }
+
+        .scrollable::-webkit-scrollbar-thumb {
+            background: var(--border-light);
+            border-radius: 3px;
+        }
+
+        .scrollable::-webkit-scrollbar-thumb:hover {
+            background: var(--border-color);
+        }
+
+        /* ===== LOADING STATES ===== */
+        .loading {
+            background: linear-gradient(90deg, var(--bg-primary) 25%, var(--hover-bg) 50%, var(--bg-primary) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ===== HEADER GENERAL ===== */
+        .main-header {
+            background: var(--header-bg);
+            border-bottom: 2px solid var(--border-color);
+            padding: 1rem 1.5rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--border-color);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .user-menu:hover {
+            background: var(--hover-bg);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--tab-contracts), var(--tab-monitoring));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .contracts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs-navigation {
+                padding: 0.5rem;
+            }
+            
+            .tab-item {
+                padding: 0.75rem 1rem;
+            }
+            
+            .tab-item span:not(.tab-icon, .tab-badge) {
+                display: none;
+            }
+            
+            .tab-badge {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        /* Estilos para el contenedor de datos del archivo */
+.file-data-container {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.file-data-container.active {
+    display: block;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.file-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+}
+
+.file-data-table th {
+    background: var(--bg-primary);
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    border: 1px solid var(--border-light);
+    font-size: 0.875rem;
+}
+
+.file-data-table td {
+    padding: 0.75rem;
+    border: 1px solid var(--border-light);
+    vertical-align: top;
+    font-size: 0.875rem;
+}
+
+.file-data-table tr:hover {
+    background: rgba(96, 165, 250, 0.05);
+}
+
+.file-data-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-light);
+}
+
+.file-item.active .timeline-step {
+    border-color: var(--border-color);
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.file-data-section {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.file-data-section.expanded {
+    max-height: 800px;
+}
+
+/* Estilos para grupos de campos */
+.field-group {
+    margin-bottom: 1.5rem;
+}
+
+.field-group h6 {
+    font-size: 0.95rem;
+}
+
+/* Estilos para formularios de edición */
+#edit-form input,
+#edit-form select,
+#edit-form textarea {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    transition: border-color 0.2s;
+}
+
+#edit-form input:focus,
+#edit-form select:focus,
+#edit-form textarea:focus {
+    border-color: var(--border-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.1);
+}
+
+/* Estilos para el formulario de extracción rápida */
+#quick-extract-form .form-group {
+    margin-bottom: 1rem;
+}
+
+/* Botones de acción en modo edición */
+.edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-light);
+    margin-top: 1rem;
+}
+
+/* Información de guardado */
+.save-info {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.save-info .text-xs {
+    font-size: 0.75rem;
+}
+
+/* Estadísticas de contrato vs facturas */
+.contract-summary-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.summary-item {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 8px;
+    background: var(--bg-primary);
+}
+
+.summary-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.summary-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.summary-value.negative {
+    color: #ef4444;
+}
+
+/* Barra de progreso mejorada */
+.progress-bar-container {
+    background: var(--bg-primary);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Estilos para el panel de estadísticas del contrato */
+.contract-summary-card {
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.summary-item {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 8px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    transition: all 0.3s ease;
+}
+
+.summary-item:hover {
+    border-color: var(--border-color);
+    transform: translateY(-2px);
+}
+
+.summary-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.summary-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.summary-value.negative {
+    color: #ef4444;
+}
+
+.summary-value.warning {
+    color: #f59e0b;
+}
+
+/* Barra de progreso mejorada */
+.progress-bar-container {
+    background: var(--bg-primary);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+    border: 1px solid var(--border-light);
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Tarjetas de contrato mejoradas */
+.contract-card {
+    background: linear-gradient(145deg, var(--bg-primary), var(--bg-secondary));
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.contract-card:hover {
+    border-color: var(--border-color);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(96, 165, 250, 0.2);
+}
+
+.contract-card.active {
+    border-color: var(--tab-contracts);
+    background: linear-gradient(145deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.contract-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--tab-contracts));
+    border-radius: 3px 3px 0 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.contract-card:hover::before {
+    opacity: 1;
+}
+
+/* Animación para actualización de datos */
+@keyframes pulseUpdate {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.updated-item {
+    animation: pulseUpdate 1s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .contract-summary-card {
+        padding: 1rem;
+    }
+}
+
+/* ===== ESTILOS PARA MONITOREO ===== */
+.kpi-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    border-color: var(--border-color);
+}
+
+.kpi-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.kpi-content {
+    flex: 1;
+}
+
+.kpi-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.kpi-change {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.kpi-change.positive {
+    background: rgba(34, 197, 94, 0.2);
+    color: #10b981;
+}
+
+.kpi-change.negative {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.kpi-change.warning {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+/* Chart Cards */
+.chart-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.chart-container {
+    height: 300px;
+    position: relative;
+}
+
+/* Alert Cards */
+.alert-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.alert-card.critical {
+    border-left: 4px solid #ef4444;
+}
+
+.alert-card.warning {
+    border-left: 4px solid #f59e0b;
+}
+
+.alert-card.info {
+    border-left: 4px solid #3b82f6;
+}
+
+.alert-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.alert-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.alert-item {
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    background: var(--bg-primary);
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+}
+
+.alert-item.critical {
+    border-left: 3px solid #ef4444;
+}
+
+.alert-item.warning {
+    border-left: 3px solid #f59e0b;
+}
+
+.alert-item.info {
+    border-left: 3px solid #3b82f6;
+}
+
+/* Activity Card */
+.activity-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.activity-table-container {
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+.activity-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.activity-table th {
+    background: var(--bg-primary);
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-light);
+}
+
+.activity-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.activity-table tr:hover {
+    background: var(--hover-bg);
+}
+
+/* Risk Map */
+.risk-map-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.risk-map-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.risk-item {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.risk-item:hover {
+    transform: scale(1.05);
+}
+
+.risk-level-1 { border-color: #10b981; background: rgba(16, 185, 129, 0.1); }
+.risk-level-2 { border-color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
+.risk-level-3 { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+
+/* ===== ESTILOS PARA REPORTES ===== */
+.report-type-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.report-type-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--border-color);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.report-type-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.report-type-content {
+    flex: 1;
+}
+
+.report-type-content h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.report-count {
+    background: var(--border-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    display: inline-block;
+    margin-top: 0.5rem;
+}
+
+/* Popular Report Cards */
+.popular-report-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.popular-report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.popular-report-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+/* Custom Report Builder */
+.custom-report-builder {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.builder-step {
+    padding: 1.5rem;
+    background: var(--bg-primary);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: none;
+}
+
+.builder-step.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.data-source-card {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-light);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.data-source-card:hover {
+    border-color: var(--border-color);
+    transform: scale(1.05);
+}
+
+.format-options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.format-option {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-light);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.format-option:hover {
+    border-color: var(--border-color);
+    transform: translateY(-5px);
+}
+
+.builder-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-light);
+}
+
+/* Report History */
+.history-table-container {
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table th {
+    background: var(--bg-primary);
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-light);
+}
+
+.history-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.history-table tr:hover {
+    background: var(--hover-bg);
+}
+
+/* Scheduled Reports */
+.scheduled-reports {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.scheduled-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.scheduled-item {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Animations */
+@keyframes pulse-alert {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.critical-alert {
+    animation: pulse-alert 2s infinite;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .kpi-card, .chart-card, .alert-card {
+        padding: 1rem;
+    }
+    
+    .grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .grid-cols-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .grid-cols-4, .grid-cols-3, .grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-container {
+        height: 250px;
+    }
+}
+
+/* Estilos adicionales para monitoreo */
+.scrollable {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-light) var(--bg-primary);
+}
+
+.scrollable::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+    border-radius: 3px;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+    background: var(--border-light);
+    border-radius: 3px;
+}
+
+.scrollable::-webkit-scrollbar-thumb:hover {
+    background: var(--border-color);
+}
+
+/* Indicador de actualización en tiempo real */
+.real-time-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); opacity: 0.7; }
+    50% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.7; }
+}
+/* ===== ESTILOS ESPECÍFICOS PARA REPORTES ===== */
+
+/* Contenedor principal */
+.reports-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Tarjetas de plantillas */
+.report-template-card {
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.report-template-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Botones de formato */
+.format-btn {
+    transition: all 0.2s ease;
+}
+
+.format-btn.active {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Tabla de historial */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+table thead th {
+    border-bottom: 2px solid #374151;
+}
+
+table tbody tr:last-child {
+    border-bottom: none;
+}
+
+/* Estados de carga */
+.loading-reports {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .reports-container {
+        padding: 0;
+    }
+    
+    .report-template-card {
+        margin-bottom: 1rem;
+    }
+    
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+/* ===== ESTILOS PARA NOTAS DE CRÉDITO ===== */
+.badge-yellow {
+    background-color: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #fbbf24;
+}
+
+/* Animación para el botón de nota de crédito */
+@keyframes pulse-yellow {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+    }
+}
+
+.bg-yellow-600 {
+    animation: pulse-yellow 2s infinite;
+}
+
+/* Estilo para el monto deducido en rojo */
+.text-red-400 {
+    color: #f87171;
+}
+
+/* Estilo para el badge de nota de crédito */
+.credit-note-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    background-color: rgba(245, 158, 11, 0.15);
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge.bg-yellow-600\/20 {
+    background-color: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    font-weight: 500;
+}
+
+.badge.bg-yellow-600\/20 i {
+    color: #fbbf24;
+}
+
+/* Animación sutil para las facturas con nota de crédito */
+@keyframes subtle-pulse {
+    0%, 100% {
+        border-color: rgba(245, 158, 11, 0.5);
+    }
+    50% {
+        border-color: rgba(245, 158, 11, 1);
+    }
+}
+
+/* ===== ESTILOS PARA MODAL DE ELIMINACIÓN ===== */
+.modal-header.bg-red-900\/20 {
+    background-color: rgba(127, 29, 29, 0.2);
+    border-bottom: 1px solid rgba(185, 28, 28, 0.3);
+}
+
+.bg-red-600\/20 {
+    background-color: rgba(220, 38, 38, 0.2);
+}
+
+.hover\:bg-red-600\/40:hover {
+    background-color: rgba(220, 38, 38, 0.4);
+}
+
+.text-red-400 {
+    color: #f87171;
+}
+
+.hover\:text-red-300:hover {
+    color: #fca5a5;
+}
+
+/* Estilo para checkbox personalizado */
+.form-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    background-color: #1f2937;
+    border: 1px solid #4b5563;
+    border-radius: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.form-checkbox:checked {
+    background-color: #dc2626;
+    border-color: #dc2626;
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+}
+
+.form-checkbox:focus {
+    outline: 2px solid rgba(220, 38, 38, 0.5);
+    outline-offset: 2px;
+}
+
+/* Animación para el botón de eliminar */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+}
+
+.bg-red-600\/20:hover i {
+    animation: shake 0.3s ease-in-out;
+}
+
+/* Botones de acción flotantes */
+.contract-card {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.contract-card .group-hover\:flex {
+    display: none;
+}
+
+.contract-card:hover .group-hover\:flex {
+    display: flex !important;
+}
+
+/* Botones de acción para archivos */
+.file-item {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.file-item .group-hover\:flex {
+    display: none;
+}
+
+.file-item:hover .group-hover\:flex {
+    display: flex !important;
+}
+
+/* Estilos para botones de acción */
+.file-action-btn,
+[class*="hover:bg-blue-600"],
+[class*="hover:bg-red-600"] {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Modal de confirmación */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: #1f2937;
+    border-radius: 0.75rem;
+    max-width: 32rem;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-danger {
+    background-color: #ef4444;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2);
+}
+
+/* Mejoras para el modal de edición */
+.modal-content input#newItemName {
+    transition: all 0.2s ease;
+}
+
+.modal-content input#newItemName:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    outline: none;
+}
+
+.modal-content input#newItemName.error {
+    border-color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Animación para el modal */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-content {
+    animation: modalFadeIn 0.2s ease-out;
+}
+
+/* Botón de guardar con icono */
+.btn-primary.bg-blue-600 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary.bg-blue-600:hover {
+    background-color: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+/* Unificar estilo de todos los botones en archivos */
+.file-item .file-action-btn,
+.file-item .px-3.py-1\.5 {
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.file-item .file-action-btn.purple {
+    background-color: rgba(139, 92, 246, 0.2);
+    color: #c4b5fd;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.file-item .file-action-btn.purple:hover {
+    background-color: rgba(139, 92, 246, 0.4);
+    border-color: rgba(139, 92, 246, 0.6);
+    transform: translateY(-1px);
+}
+
+.file-item .file-action-btn.success {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #a7f3d0;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.file-item .file-action-btn.success:hover {
+    background-color: rgba(16, 185, 129, 0.4);
+    border-color: rgba(16, 185, 129, 0.6);
+    transform: translateY(-1px);
+}
+
+.file-item a.file-action-btn {
+    background-color: rgba(75, 85, 99, 0.3);
+    color: #e5e7eb;
+    border: 1px solid rgba(75, 85, 99, 0.5);
+    text-decoration: none;
+}
+
+.file-item a.file-action-btn:hover {
+    background-color: rgba(75, 85, 99, 0.6);
+    border-color: rgba(75, 85, 99, 0.8);
+    transform: translateY(-1px);
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .file-item .flex-wrap {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+    
+    .file-item .flex-wrap > div,
+    .file-item .flex-wrap > button,
+    .file-item .flex-wrap > a {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Estilos para el header clickeable del archivo */
+.file-header {
+    transition: background-color 0.2s ease;
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+}
+
+.file-header:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Animación para el contenedor de botones */
+.file-buttons-container {
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Chevron indicator */
+.fa-chevron-down,
+.fa-chevron-up {
+    transition: transform 0.2s ease;
+}
+
+/* Para la versión hover */
+.group:hover .group-hover\:flex {
+    display: flex !important;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Estilos para badges de firma */
+.signature-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.signature-badge.signed {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #a7f3d0;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.signature-badge.unsigned {
+    background-color: rgba(245, 158, 11, 0.2);
+    color: #fcd34d;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Botones con colores fijos */
+.bg-blue-600 {
+    background-color: #2563eb;
+}
+
+.bg-blue-600:hover {
+    background-color: #1d4ed8;
+}
+
+.bg-red-600 {
+    background-color: #dc2626;
+}
+
+.bg-red-600:hover {
+    background-color: #b91c1c;
+}
+
+.bg-yellow-600 {
+    background-color: #d97706;
+}
+
+.bg-yellow-600:hover {
+    background-color: #b45309;
+}
+
+/* Asegurar texto blanco en botones */
+.text-white {
+    color: #ffffff;
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+/* Espaciado para badges en el nombre del archivo */
+.font-medium.truncate {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.contract-data-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.5rem;
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #93c5fd;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* Indicadores de firma en carpetas */
+.contract-card .signature-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    margin-right: 0.5rem;
+}
+
+.contract-card .signature-badge.signed {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #a7f3d0;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.contract-card .signature-badge.unsigned {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #fcd34d;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+/* Espaciado para los badges en carpetas */
+.contract-meta + .flex.items-center {
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Estilos para badges de firma */
+.signature-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.signature-badge.signed {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.signature-badge.unsigned {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Badge en carpetas */
+.contract-card .signature-badge {
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
+/* Para contratos en el detalle */
+.file-item .signature-badge {
+    margin-left: 8px;
+}
+
+/* Estilos para el panel de compromisos */
+.commitment-item {
+    transition: all 0.2s ease;
+}
+
+.commitment-item:hover {
+    transform: translateX(4px);
+    border-color: #fbbf24;
+}
+
+/* Barra de progreso segmentada */
+.progress-segment {
+    transition: width 0.3s ease;
+}
+
+/* Animación para nuevos compromisos */
+@keyframes highlight {
+    0% { background-color: rgba(251, 191, 36, 0.2); }
+    100% { background-color: transparent; }
+}
+
+.commitment-item-new {
+    animation: highlight 2s ease-out;
+}
+
+/* Mejoras para inputs numéricos */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+    height: 20px;
+}
+
+/* Estilo para el contenedor de botones */
+.tab-pane-header .flex.gap-3 {
+    margin-left: auto;
+}
+
+@keyframes slide-up {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.animate-slide-up {
+    animation: slide-up 0.3s ease-out;
+}
+
+/* Estilo para el toast de resumen */
+.fixed.bottom-4.right-4 {
+    max-width: 350px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(75, 85, 99, 0.3);
+}
+
+/* ===== ESTILOS PARA TARJETAS DE MONTOS - VERSIÓN SIN TAILWIND ===== */
+.financial-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.financial-card {
+    text-align: center;
+    padding: 1rem;
+    background-color: #1f2937; /* bg-gray-800 */
+    border: 1px solid #374151; /* border-gray-700 */
+    border-radius: 0.5rem;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.financial-card-title {
+    font-size: 0.875rem;
+    color: #9ca3af; /* text-gray-400 */
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.financial-card-value {
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    line-height: 1.3;
+    word-break: break-word; /* PERMITE QUE EL TEXTO SE ROMPA SI ES NECESARIO */
+    white-space: normal; /* PERMITE MÚLTIPLES LÍNEAS */
+    font-size: clamp(1rem, 2.5vw, 1.5rem); /* TAMAÑO DE FUENTE ADAPTABLE */
+}
+
+/* Colores para cada tipo de tarjeta */
+.financial-card-blue {
+    background-color: rgba(59, 130, 246, 0.1); /* bg-blue-900/20 */
+    border-color: rgba(59, 130, 246, 0.3); /* border-blue-700/30 */
+}
+.financial-card-blue .financial-card-value {
+    color: #60a5fa; /* text-blue-400 */
+}
+
+.financial-card-green {
+    background-color: rgba(34, 197, 94, 0.1); /* bg-green-900/20 */
+    border-color: rgba(34, 197, 94, 0.3); /* border-green-700/30 */
+}
+.financial-card-green .financial-card-value {
+    color: #4ade80; /* text-green-400 */
+}
+
+.financial-card-yellow {
+    background-color: rgba(234, 179, 8, 0.1); /* bg-yellow-900/20 */
+    border-color: rgba(234, 179, 8, 0.3); /* border-yellow-700/30 */
+}
+.financial-card-yellow .financial-card-value {
+    color: #fbbf24; /* text-yellow-400 */
+}
+
+.financial-card-purple {
+    background-color: rgba(168, 85, 247, 0.1); /* bg-purple-900/20 */
+    border-color: rgba(168, 85, 247, 0.3); /* border-purple-700/30 */
+}
+.financial-card-purple .financial-card-value {
+    color: #c084fc; /* text-purple-400 */
+}
+
+.financial-card-red {
+    background-color: rgba(239, 68, 68, 0.1); /* bg-red-900/20 */
+    border-color: rgba(239, 68, 68, 0.3); /* border-red-700/30 */
+}
+.financial-card-red .financial-card-value {
+    color: #f87171; /* text-red-400 */
+}
+
+.financial-card-subtitle {
+    font-size: 0.75rem;
+    color: #9ca3af; /* text-gray-400 */
+    margin-top: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Grid responsivo */
+@media (max-width: 1024px) {
+    .financial-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .financial-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .financial-card-value {
+        font-size: 1.25rem; /* 20px en móvil */
+    }
+}
+
+/* Para números extremadamente largos, permitir múltiples líneas */
+.financial-card-value {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: none;
+    max-width: 100%;
+}
+
+/* Grid para las 4 tarjetas */
+.financial-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Estilo base de las tarjetas */
+.financial-card {
+    text-align: center;
+    padding: 0.75rem;
+    background-color: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 0.5rem;
+}
+
+/* Títulos */
+.financial-card-title {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+}
+
+/* Valores - MÁS PEQUEÑOS Y EN UNA SOLA LÍNEA */
+.financial-card-value {
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem; /* Reducido de 1.5rem a 1.1rem */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: inherit;
+}
+
+/* Subtítulos */
+.financial-card-subtitle {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin-top: 0.25rem;
+    white-space: nowrap;
+}
+
+/* Colores */
+.financial-card-blue { color: #60a5fa; }
+.financial-card-green { color: #4ade80; }
+.financial-card-yellow { color: #fbbf24; }
+.financial-card-purple { color: #c084fc; }
+.financial-card-red { color: #f87171; }
+
+/* Responsive: 2 columnas en tablet */
+@media (max-width: 1024px) {
+    .financial-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* 1 columna en móvil */
+@media (max-width: 640px) {
+    .financial-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Estilos para el panel de información de usuario */
+.user-info-panel {
+    animation: slideDown 0.3s ease-out;
+}
+
+.user-info-panel .grid {
+    transition: all 0.2s ease;
+}
+
+.user-info-panel .bg-gray-900\/50:hover {
+    background-color: rgba(17, 24, 39, 0.7);
+}
+
+/* Animación para el panel */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilo para el botón de nuevo usuario */
+.btn-primary.bg-green-600 {
+    transition: all 0.2s ease;
+}
+
+.btn-primary.bg-green-600:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}

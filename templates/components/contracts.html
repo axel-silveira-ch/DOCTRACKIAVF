@@ -1,0 +1,33 @@
+<!-- Contenido de la pestaña Contratos -->
+<div class="tab-pane active" id="contracts-tab">
+    <div class="tab-pane-header">
+        <h2 class="tab-pane-title">
+            <i class="fas fa-file-contract text-blue-500"></i>
+            Gestión de Documentos
+        </h2>
+        <p class="tab-pane-subtitle">
+            Administra todos los documentos. 
+            Visualiza el estado de cada documento y realiza seguimiento.
+        </p>
+    </div>
+    
+    <div class="contracts-grid">
+        <!-- Lista de Contratos -->
+        <div class="contracts-list scrollable" id="contractsList">
+            <!-- Las carpetas se cargarán aquí dinámicamente -->
+            <div class="text-center py-12" id="contractsLoading">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                <p class="text-gray-400">Cargando Documentos...</p>
+            </div>
+        </div>
+        
+        <!-- Detalle del Contrato -->
+        <div class="contract-detail scrollable" id="contractDetail">
+            <div class="text-center py-12" id="contractDetailPlaceholder">
+                <i class="fas fa-folder-open text-4xl text-gray-600 mb-4"></i>
+                <p class="text-gray-400">Selecciona una carpeta para ver los detalles</p>
+                <p class="text-sm text-gray-500 mt-2">Haz clic en cualquier carpeta de la lista</p>
+            </div>
+        </div>
+    </div>
+</div>

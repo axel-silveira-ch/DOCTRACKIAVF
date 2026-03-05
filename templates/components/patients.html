@@ -1,0 +1,460 @@
+<!-- Módulo de Gestión de Pacientes y Recetas Médicas -->
+<div class="tab-pane" id="payments-tab">
+    <!-- Header con título -->
+    <div class="tab-pane-header">
+        <h2 class="tab-pane-title">
+            <i class="fas fa-users text-green-500"></i>
+            Gestión de Pacientes y Recetas
+        </h2>
+        <p class="tab-pane-subtitle">
+            Administra pacientes, crea recetas médicas y genera documentos automáticamente en Google Docs.
+        </p>
+    </div>
+    
+    <!-- Contenido principal -->
+    <div id="payments-content">
+        <!-- Las estadísticas se cargarán aquí -->
+        <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-gray-700/50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-green-400" id="total-pacientes">0</div>
+                    <div class="text-sm text-gray-400">Total Pacientes</div>
+                </div>
+                <div class="bg-gray-700/50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-blue-400" id="recetas-mes">0</div>
+                    <div class="text-sm text-gray-400">Recetas este mes</div>
+                </div>
+                <div class="bg-gray-700/50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-yellow-400" id="pacientes-activos">0</div>
+                    <div class="text-sm text-gray-400">Pacientes Activos</div>
+                </div>
+                <div class="bg-gray-700/50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-purple-400" id="ultima-receta">-</div>
+                    <div class="text-sm text-gray-400">Última Receta</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Panel de acciones principales -->
+        <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-6">
+            <div class="flex flex-wrap gap-4 items-center justify-between">
+                <h3 class="font-semibold text-lg flex items-center">
+                    <i class="fas fa-notes-medical text-green-500 mr-2"></i>
+                    Crear Nueva Receta
+                </h3>
+                
+                <button onclick="openCreateRecipeModal()" 
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+                    <i class="fas fa-plus-circle"></i>
+                    Nueva Receta
+                </button>
+            </div>
+            
+            <!-- Búsqueda rápida de pacientes -->
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-300 mb-2">
+                    <i class="fas fa-search mr-1"></i> Buscar paciente para receta rápida:
+                </label>
+                <div class="relative">
+                    <input type="text" 
+                           id="quick-patient-search"
+                           placeholder="Escribe el nombre del paciente..." 
+                           class="w-full bg-gray-700 border border-gray-600 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-green-500">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    <div id="quick-search-results" class="absolute z-10 w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg hidden max-h-60 overflow-y-auto"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Panel principal con dos columnas -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Columna izquierda: Lista de pacientes -->
+            <div class="lg:col-span-1">
+                <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-semibold text-lg flex items-center">
+                            <i class="fas fa-users mr-2 text-blue-400"></i>
+                            Pacientes
+                        </h3>
+                        
+                        <button onclick="openCreatePatientModal()" 
+                                class="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded flex items-center gap-1">
+                            <i class="fas fa-user-plus"></i>
+                            Nuevo
+                        </button>
+                    </div>
+                    
+                    <!-- Buscador de pacientes -->
+                    <div class="relative mb-4">
+                        <input type="text" 
+                               id="patient-search"
+                               placeholder="Buscar paciente..." 
+                               class="w-full bg-gray-700 border border-gray-600 rounded-lg pl-8 pr-4 py-2 text-sm">
+                        <i class="fas fa-search absolute left-2 top-2.5 text-gray-400 text-sm"></i>
+                    </div>
+                    
+                    <!-- Lista de pacientes -->
+                    <div id="patients-list" class="space-y-2 max-h-96 overflow-y-auto">
+                        <!-- Se llena dinámicamente -->
+                        <div class="text-center py-4 text-gray-500">
+                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                            <p>Cargando pacientes...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Columna derecha: Detalle del paciente seleccionado y recetas -->
+            <div class="lg:col-span-2">
+                <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
+                    <!-- Detalle del paciente (visible cuando hay selección) -->
+                    <div id="patient-detail-section" class="hidden">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <h3 class="font-semibold text-lg flex items-center">
+                                    <i class="fas fa-user-circle text-green-400 mr-2 text-2xl"></i>
+                                    <span id="selected-patient-name">Nombre del Paciente</span>
+                                </h3>
+                                <p class="text-sm text-gray-400 mt-1" id="selected-patient-info"></p>
+                            </div>
+                            
+                            <button onclick="openCreateRecipeModalForCurrentPatient()" 
+                                    class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded flex items-center gap-2 text-sm">
+                                <i class="fas fa-prescription"></i>
+                                Recetar
+                            </button>
+                        </div>
+                        
+                        <!-- Historial de recetas -->
+                        <h4 class="font-medium mb-3 flex items-center">
+                            <i class="fas fa-history mr-2 text-gray-400"></i>
+                            Historial de Recetas
+                        </h4>
+                        
+                        <div id="recipes-history" class="space-y-3 max-h-96 overflow-y-auto">
+                            <!-- Se llena dinámicamente -->
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fas fa-file-prescription text-3xl mb-2 opacity-30"></i>
+                                <p>Selecciona un paciente para ver sus recetas</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mensaje cuando no hay paciente seleccionado -->
+                    <div id="no-patient-selected" class="text-center py-16">
+                        <i class="fas fa-user-plus text-5xl text-gray-600 mb-4"></i>
+                        <h3 class="text-xl font-medium text-gray-400 mb-2">Ningún paciente seleccionado</h3>
+                        <p class="text-gray-500">Selecciona un paciente de la lista o crea uno nuevo para comenzar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODALES ===== -->
+
+<!-- Modal para crear/editar paciente -->
+<div id="patient-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-gray-800 rounded-lg w-full max-w-md p-6 border border-gray-700">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold flex items-center">
+                <i class="fas fa-user-plus text-blue-400 mr-2"></i>
+                <span id="patient-modal-title">Nuevo Paciente</span>
+            </h3>
+            <button onclick="closePatientModal()" class="text-gray-400 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="patient-form" onsubmit="savePatient(event)">
+            <input type="hidden" id="patient-folder-id">
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">
+                        Nombre completo <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" 
+                           id="patient-name"
+                           required
+                           class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">
+                        Fecha de nacimiento
+                    </label>
+                    <input type="date" 
+                           id="patient-birthdate"
+                           class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">
+                        Email
+                    </label>
+                    <input type="email" 
+                           id="patient-email"
+                           class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">
+                        Teléfono
+                    </label>
+                    <input type="tel" 
+                           id="patient-phone"
+                           class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">
+                        Alergias / Notas médicas
+                    </label>
+                    <textarea id="patient-notes" 
+                              rows="2"
+                              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"></textarea>
+                </div>
+            </div>
+            
+            <div class="flex justify-end gap-2 mt-6">
+                <button type="button" 
+                        onclick="closePatientModal()"
+                        class="px-4 py-2 border border-gray-600 rounded-lg hover:bg-gray-700">
+                    Cancelar
+                </button>
+                <button type="submit" 
+                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center gap-2">
+                    <i class="fas fa-save"></i>
+                    Guardar Paciente
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal para crear receta -->
+<div id="recipe-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-gray-800 rounded-lg w-full max-w-2xl p-6 border border-gray-700 max-h-screen overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold flex items-center">
+                <i class="fas fa-prescription text-green-400 mr-2"></i>
+                Nueva Receta Médica
+            </h3>
+            <button onclick="closeRecipeModal()" class="text-gray-400 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="recipe-form" onsubmit="createRecipe(event)">
+            <input type="hidden" id="recipe-patient-id">
+            
+            <div class="space-y-4">
+                <!-- Buscador de pacientes (solo visible si no viene de selección) -->
+                <div id="recipe-patient-selector" class="mb-4">
+                    <label class="block text-sm font-medium text-gray-300 mb-1">
+                        Paciente <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <input type="text" 
+                               id="recipe-patient-search"
+                               placeholder="Buscar paciente..." 
+                               class="w-full bg-gray-700 border border-gray-600 rounded-lg pl-10 pr-4 py-2">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        <div id="recipe-patient-results" class="absolute z-10 w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg hidden max-h-40 overflow-y-auto"></div>
+                    </div>
+                    <div id="selected-patient-display" class="mt-2 hidden">
+                        <div class="flex items-center justify-between bg-gray-700 p-2 rounded">
+                            <span id="selected-patient-name-display"></span>
+                            <button type="button" onclick="clearRecipePatient()" class="text-red-400 text-sm">
+                                <i class="fas fa-times"></i> Cambiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Datos de la receta -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">
+                            Fecha <span class="text-red-500">*</span>
+                        </label>
+                        <input type="date" 
+                               id="recipe-date"
+                               required
+                               class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">
+                            Médico
+                        </label>
+                        <input type="text" 
+                               id="recipe-doctor"
+                               class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2">
+                    </div>
+                </div>
+                
+                <!-- Diagnóstico -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">
+                        Diagnóstico <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="recipe-diagnosis" 
+                              rows="2"
+                              required
+                              placeholder="Descripción del diagnóstico..."
+                              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"></textarea>
+                </div>
+                
+                <!-- Medicamentos (se pueden agregar múltiples) -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">
+                        Medicamentos recetados <span class="text-red-500">*</span>
+                    </label>
+                    
+                    <div id="medicines-container" class="space-y-2">
+                        <!-- Plantilla de medicamento -->
+                        <div class="medicine-item grid grid-cols-12 gap-2 items-center">
+                            <div class="col-span-5">
+                                <input type="text" 
+                                       placeholder="Medicamento"
+                                       class="medicine-name w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm">
+                            </div>
+                            <div class="col-span-3">
+                                <input type="text" 
+                                       placeholder="Dosis"
+                                       class="medicine-dosage w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm">
+                            </div>
+                            <div class="col-span-3">
+                                <input type="text" 
+                                       placeholder="Frecuencia"
+                                       class="medicine-frequency w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm">
+                            </div>
+                            <div class="col-span-1 text-center">
+                                <button type="button" onclick="removeMedicine(this)" class="text-red-400 hover:text-red-300">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" 
+                            onclick="addMedicine()"
+                            class="mt-2 text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                        <i class="fas fa-plus-circle"></i>
+                        Agregar otro medicamento
+                    </button>
+                </div>
+                
+                <!-- Instrucciones adicionales -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">
+                        Instrucciones adicionales
+                    </label>
+                    <textarea id="recipe-instructions" 
+                              rows="2"
+                              placeholder="Indicaciones especiales, duración del tratamiento, etc."
+                              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"></textarea>
+                </div>
+                
+                <!-- Próxima cita -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">
+                        Próxima cita (opcional)
+                    </label>
+                    <input type="date" 
+                           id="recipe-next-appointment"
+                           class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2">
+                </div>
+            </div>
+            
+            <div class="flex justify-end gap-2 mt-6">
+                <button type="button" 
+                        onclick="closeRecipeModal()"
+                        class="px-4 py-2 border border-gray-600 rounded-lg hover:bg-gray-700">
+                    Cancelar
+                </button>
+                <button type="submit" 
+                        class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg flex items-center gap-2">
+                    <i class="fas fa-file-medical"></i>
+                    Generar Receta
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de éxito/visualización de receta generada -->
+<div id="recipe-success-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-gray-800 rounded-lg w-full max-w-md p-6 border border-gray-700">
+        <div class="text-center mb-4">
+            <div class="w-16 h-16 bg-green-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                <i class="fas fa-check-circle text-4xl text-green-400"></i>
+            </div>
+            <h3 class="text-xl font-semibold">¡Receta generada!</h3>
+            <p class="text-gray-400 mt-1" id="success-message">La receta se ha creado exitosamente</p>
+        </div>
+        
+        <div class="bg-gray-900 rounded-lg p-4 mb-4">
+            <p class="text-sm text-gray-400 mb-2">Documento creado:</p>
+            <p class="font-medium" id="recipe-doc-name"></p>
+            <p class="text-xs text-gray-500 mt-1" id="recipe-doc-path"></p>
+        </div>
+        
+        <div class="flex justify-center gap-3">
+            <a href="#" id="recipe-doc-link" target="_blank" 
+               class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center gap-2">
+                <i class="fas fa-external-link-alt"></i>
+                Abrir en Google Docs
+            </a>
+            <button onclick="closeSuccessModal()" 
+                    class="px-4 py-2 border border-gray-600 rounded-lg hover:bg-gray-700">
+                Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Estilos adicionales para scrollbars personalizados */
+#patients-list::-webkit-scrollbar,
+#recipes-history::-webkit-scrollbar,
+#quick-search-results::-webkit-scrollbar {
+    width: 6px;
+}
+
+#patients-list::-webkit-scrollbar-track,
+#recipes-history::-webkit-scrollbar-track,
+#quick-search-results::-webkit-scrollbar-track {
+    background: #1f2937;
+    border-radius: 3px;
+}
+
+#patients-list::-webkit-scrollbar-thumb,
+#recipes-history::-webkit-scrollbar-thumb,
+#quick-search-results::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 3px;
+}
+
+#patients-list::-webkit-scrollbar-thumb:hover,
+#recipes-history::-webkit-scrollbar-thumb:hover,
+#quick-search-results::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+
+/* Transiciones suaves */
+.tab-pane {
+    transition: opacity 0.3s ease;
+}
+
+.patient-item {
+    transition: all 0.2s ease;
+}
+
+.patient-item:hover {
+    transform: translateX(2px);
+}
+</style>

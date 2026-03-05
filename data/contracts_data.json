@@ -1,0 +1,140 @@
+{
+  "1SCx3mYusUdgA6Srav0xkXx5uuqBwDz2c": {
+    "data": {
+      "status": "Activo",
+      "tipo_adjudicacion": "ADJUDICACION DIRECTA POR MONTO",
+      "concepto": "Adquisicion de rituximab solucion inyectable para los Servicios de Salud de Yucatan",
+      "proveedor": "DISTRIBUIDORA DE FARMACOS Y FRAGANCIAS, S.A. DE C.V.",
+      "folio_adjudicacion": "AD-90-Y95-927007985-N-36-25-C1",
+      "partida_presupuestal": "",
+      "nombre_partida": "",
+      "numero_oficio": "SSY/DA/604 BIS/2025",
+      "fecha_oficio": "2025-11-13",
+      "fecha_suscripcion": "2025-11-13",
+      "vigencia_inicial": "2025-11-13",
+      "vigencia_final": "2025-12-31",
+      "monto_minimo": "0.00",
+      "monto_maximo": "227151.96",
+      "clasificacion_contrato": "CERRADO",
+      "observaciones": "",
+      "signature_tag": "con_firma"
+    },
+    "metadata": {
+      "file_id": "1SCx3mYusUdgA6Srav0xkXx5uuqBwDz2c",
+      "saved_by": "admin",
+      "saved_at": "2026-02-12T16:12:29.097832",
+      "updated_at": "2026-02-12T16:39:35.073285",
+      "extraction_method": "google_ai",
+      "extraction_date": "2026-02-12T16:13:23.170796",
+      "folder_id": "1R2_nS8TIJv3ee4bwK4Ck3pKGW9dcb1zs"
+    },
+    "history": [
+      {
+        "data": {
+          "signature_tag": "con_firma"
+        },
+        "updated_by": "admin",
+        "updated_at": "2026-02-12T16:12:29.097844"
+      },
+      {
+        "data": {
+          "signature_tag": "con_firma"
+        },
+        "updated_by": "admin",
+        "updated_at": "2026-02-12T16:19:38.434841"
+      },
+      {
+        "data": {
+          "signature_tag": "con_firma"
+        },
+        "updated_by": "admin",
+        "updated_at": "2026-02-12T16:31:09.354169"
+      },
+      {
+        "data": {
+          "signature_tag": "con_firma"
+        },
+        "updated_by": "admin",
+        "updated_at": "2026-02-12T16:33:14.291990"
+      },
+      {
+        "data": {
+          "signature_tag": "con_firma"
+        },
+        "updated_by": "admin",
+        "updated_at": "2026-02-12T16:39:35.073320"
+      }
+    ],
+    "ia_extraction": {
+      "original_data": {
+        "status": "Activo",
+        "tipo_adjudicacion": "ADJUDICACION DIRECTA POR MONTO",
+        "concepto": "Adquisicion de rituximab solucion inyectable para los Servicios de Salud de Yucatan",
+        "proveedor": "DISTRIBUIDORA DE FARMACOS Y FRAGANCIAS, S.A. DE C.V.",
+        "folio_adjudicacion": "AD-90-Y95-927007985-N-36-25-C1",
+        "partida_presupuestal": "",
+        "nombre_partida": "",
+        "numero_oficio": "SSY/DA/604 BIS/2025",
+        "fecha_oficio": "2025-11-13",
+        "fecha_suscripcion": "2025-11-13",
+        "vigencia_inicial": "2025-11-13",
+        "vigencia_final": "2025-12-31",
+        "monto_minimo": "0.00",
+        "monto_maximo": "227151.96",
+        "clasificacion_contrato": "CERRADO",
+        "observaciones": ""
+      },
+      "extraction_date": "2026-02-12T16:13:23.170782"
+    }
+  },
+  "11VOlUMI35AMTvSBsAhvSIXYNJzH4eWNI": {
+    "data": {
+      "status": "Activo",
+      "tipo_adjudicacion": "ADJUDICACIÓN DIRECTA POR MONTO",
+      "concepto": "Servicio de monitorco, supervision y seguimiento de la planta de tratamiento de aguas residuales (PTAR) para los Servicios de Salud de Yucatán.",
+      "proveedor": "SERVICIO DE RECOLECCION DE AGUAS NEGRAS DEL SURESTES,. DER.L. DEC.V.",
+      "folio_adjudicacion": "AD-SSY-YUC-04-25-C1",
+      "partida_presupuestal": "",
+      "nombre_partida": "",
+      "numero_oficio": "SSY/DA/22B11S 2/2025",
+      "fecha_oficio": "2025-03-31",
+      "fecha_suscripcion": "2025-03-31",
+      "vigencia_inicial": "2025-04-01",
+      "vigencia_final": "2025-07-31",
+      "monto_minimo": "0.00",
+      "monto_maximo": "1020568.00",
+      "clasificacion_contrato": "CERRADO",
+      "observaciones": ""
+    },
+    "metadata": {
+      "file_id": "11VOlUMI35AMTvSBsAhvSIXYNJzH4eWNI",
+      "folder_id": "1R2_nS8TIJv3ee4bwK4Ck3pKGW9dcb1zs",
+      "saved_by": "admin",
+      "saved_at": "2026-02-13T11:01:52.891558",
+      "updated_at": "2026-02-13T11:01:52.891567",
+      "extraction_method": "google_ai",
+      "extraction_date": "2026-02-13T11:01:52.891569"
+    },
+    "ia_extraction": {
+      "original_data": {
+        "status": "Activo",
+        "tipo_adjudicacion": "ADJUDICACIÓN DIRECTA POR MONTO",
+        "concepto": "Servicio de monitorco, supervision y seguimiento de la planta de tratamiento de aguas residuales (PTAR) para los Servicios de Salud de Yucatán.",
+        "proveedor": "SERVICIO DE RECOLECCION DE AGUAS NEGRAS DEL SURESTES,. DER.L. DEC.V.",
+        "folio_adjudicacion": "AD-SSY-YUC-04-25-C1",
+        "partida_presupuestal": "",
+        "nombre_partida": "",
+        "numero_oficio": "SSY/DA/22B11S 2/2025",
+        "fecha_oficio": "2025-03-31",
+        "fecha_suscripcion": "2025-03-31",
+        "vigencia_inicial": "2025-04-01",
+        "vigencia_final": "2025-07-31",
+        "monto_minimo": "0.00",
+        "monto_maximo": "1020568.00",
+        "clasificacion_contrato": "CERRADO",
+        "observaciones": ""
+      },
+      "extraction_date": "2026-02-13T11:01:52.891571"
+    }
+  }
+}

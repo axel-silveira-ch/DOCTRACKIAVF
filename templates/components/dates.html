@@ -1,0 +1,95 @@
+<!-- Pestaña de Gestión de Citas -->
+<div class="tab-pane" id="monitoring-tab">
+    <div class="tab-pane-header">
+        <h2 class="tab-pane-title">
+            <i class="fas fa-calendar-check text-purple-500"></i>
+            Gestión de Citas Médicas
+        </h2>
+        <p class="tab-pane-subtitle">
+            Agenda y administra las citas de tus pacientes. Visualiza el calendario y programa nuevas consultas.
+        </p>
+    </div>
+    
+    <!-- Botones de acción rápida -->
+    <div class="flex justify-between items-center mb-6">
+        <div class="flex gap-2">
+            <button onclick="showNewAppointmentModal()" class="btn-primary">
+                <i class="fas fa-plus mr-2"></i>
+                Nueva Cita
+            </button>
+            <button onclick="loadAppointments()" class="btn-secondary">
+                <i class="fas fa-sync-alt mr-2"></i>
+                Actualizar
+            </button>
+        </div>
+        
+        <div class="flex gap-2">
+            <select id="appointmentFilter" class="bg-gray-800 border border-gray-700 rounded p-2 text-sm" onchange="filterAppointments()">
+                <option value="all">Todas las citas</option>
+                <option value="today">Hoy</option>
+                <option value="tomorrow">Mañana</option>
+                <option value="week">Esta semana</option>
+                <option value="pending">Pendientes</option>
+                <option value="completed">Completadas</option>
+            </select>
+            <select id="appointmentView" class="bg-gray-800 border border-gray-700 rounded p-2 text-sm" onchange="changeAppointmentView()">
+                <option value="list">Vista Lista</option>
+                <option value="calendar">Vista Calendario</option>
+            </select>
+        </div>
+    </div>
+    
+    <!-- KPIs de Citas -->
+    <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="kpi-card bg-gradient-to-br from-blue-900/30 to-blue-800/20">
+            <div class="kpi-icon">
+                <i class="fas fa-calendar-check text-blue-400"></i>
+            </div>
+            <div class="kpi-content">
+                <div class="kpi-label">Total Citas</div>
+                <div class="kpi-value" id="totalAppointments">0</div>
+            </div>
+        </div>
+        
+        <div class="kpi-card bg-gradient-to-br from-green-900/30 to-green-800/20">
+            <div class="kpi-icon">
+                <i class="fas fa-calendar-day text-green-400"></i>
+            </div>
+            <div class="kpi-content">
+                <div class="kpi-label">Citas Hoy</div>
+                <div class="kpi-value" id="todayAppointments">0</div>
+            </div>
+        </div>
+        
+        <div class="kpi-card bg-gradient-to-br from-yellow-900/30 to-yellow-800/20">
+            <div class="kpi-icon">
+                <i class="fas fa-hourglass-half text-yellow-400"></i>
+            </div>
+            <div class="kpi-content">
+                <div class="kpi-label">Pendientes</div>
+                <div class="kpi-value" id="pendingAppointments">0</div>
+            </div>
+        </div>
+        
+        <div class="kpi-card bg-gradient-to-br from-purple-900/30 to-purple-800/20">
+            <div class="kpi-icon">
+                <i class="fas fa-users text-purple-400"></i>
+            </div>
+            <div class="kpi-content">
+                <div class="kpi-label">Pacientes</div>
+                <div class="kpi-value" id="totalPatients">0</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contenedor principal de citas -->
+    <div id="appointments-content">
+        <div class="text-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+            <p class="text-gray-400">Cargando agenda de citas...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para nueva cita (se cargará dinámicamente) -->
+<div id="appointment-modal-container"></div>
